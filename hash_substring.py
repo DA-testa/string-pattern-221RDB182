@@ -1,47 +1,42 @@
 def read_input():
-    # Print prompt for the pattern and read from input
-    print("Enter pattern:")
+    choice = input()
     pattern = input().rstrip()
-
-    # Print prompt for the text and read from input
-    print("Enter text:")
     text = input().rstrip()
-
     return pattern, text
 
-def print_occurrences(output):
-    # Print the occurrences separated by spaces
-    print(' '.join(map(str, output)))
+def poly_hash(s, p, x):
+    h = 0
+    for i in range(len(s) - 1, -1, -1):
+        h = (h * x + ord(s[i])) % p
+    return h
 
-def get_occurrences(pattern, text):
-    # Check if the pattern is longer than the text
-    if len(pattern) > len(text):
-        return []
+def precompute_hashes(T, P, p, x):
+    H = [0] * (len(T) - len(P) + 1)
+    S = T[len(T) - len(P):]
+    H[len(T) - len(P)] = poly_hash(S, p, x)
+    y = 1
+    for i in range(len(P)):
+        y = (y * x) % p
+    for i in range(len(T) - len(P) - 1, -1, -1):
+        H[i] = (x * H[i + 1] + ord(T[i]) - y * ord(T[i + len(P)])) % p
+    return H
 
-    # Choose a prime number and a base for the hash function
-    prime = 1000000007
-    base = 263
-
-    # Compute the hash of the pattern and the first window of the text
-    pattern_hash = 0
-    text_hash = 0
-    power = 1
-    for i in range(len(pattern)):
-        pattern_hash = (pattern_hash * base + ord(pattern[i])) % prime
-        text_hash = (text_hash * base + ord(text[i])) % prime
-        power = (power * base) % prime
-
-    # Compare the hash values of the pattern and the windows of the text
-    occurrences = []
+def rabin_karp(pattern, text):
+    p = 10**9 + 7
+    x = 263
+    result = []
+    p_hash = poly_hash(pattern, p, x)
+    H = precompute_hashes(text, pattern, p, x)
     for i in range(len(text) - len(pattern) + 1):
-        if pattern_hash == text_hash and pattern == text[i:i+len(pattern)]:
-            occurrences.append(i)
-        if i < len(text) - len(pattern):
-            text_hash = (base * (text_hash - ord(text[i]) * power) + ord(text[i+len(pattern)])) % prime
+        if p_hash != H[i]:
+            continue
+        if text[i:i + len(pattern)] == pattern:
+            result.append(i)
+    return result
 
-    return occurrences
-
-# Read input, find occurrences, and print them
-pattern, text = read_input()
-occurrences = get_occurrences(pattern, text)
-print_occurrences(occurrences)
+if __name__ == '__main__':
+    pattern, text = read_input()
+    result = rabin_karp(pattern, text)
+    for pos in result:
+        print(pos, end=' ')
+        
