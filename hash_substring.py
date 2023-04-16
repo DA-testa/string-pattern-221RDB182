@@ -6,8 +6,7 @@ def read_input():
         pattern = input().rstrip()
         text = input().rstrip()
     except EOFError:
-        print("Error: End of file reached while reading input.")
-        sys.exit(1)
+        return None
     return pattern, text
 
 def poly_hash(s, p, x):
@@ -43,7 +42,11 @@ def rabin_karp(pattern, text):
     return result
 
 if __name__ == '__main__':
-    pattern, text = read_input()
-    result = rabin_karp(pattern, text)
-    for pos in result:
-        print(pos, end=' ')
+    while True:
+        input_data = read_input()
+        if input_data is None:
+            break
+        pattern, text = input_data
+        result = rabin_karp(pattern, text)
+        for pos in result:
+            print(pos, end=' ')
