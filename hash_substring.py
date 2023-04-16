@@ -11,31 +11,27 @@ def print_occurrences(output):
     print(' '.join(map(str, output)))
 
 def get_occurrences(pattern, text):
-    if len(pattern) > len(text):
-        return []
-
+    # Calculate the hash of the pattern
     pattern_hash = hash(pattern)
+
+    # Initialize variables
     window_hash = hash(text[:len(pattern)])
     occurrences = []
+
+    # Calculate POW_BASE
+    POW_BASE = pow(BASE, len(pattern) - 1, PRIME)
+
+    # Iterate over the text
     for i in range(len(text) - len(pattern) + 1):
-        if pattern_hash == window_hash and pattern == text[i:i+len(pattern)]:
-            occurrences.append(i)
+        # Check if the hash of the window matches the hash of the pattern
+        if window_hash == pattern_hash:
+            # Check if the characters in the window match the pattern
+            if text[i:i+len(pattern)] == pattern:
+                occurrences.append(i)
+        
+        # Update the hash of the window
         if i < len(text) - len(pattern):
-            window_hash = update_hash(window_hash, text[i], text[i+len(pattern)])
+            window_hash = update_hash(window_hash, text[i], text[i+len(pattern)], POW_BASE)
+    
+    # Return the occurrences
     return occurrences
-
-def hash(s):
-    h = 0
-    for c in s:
-        h = (h * BASE + ord(c)) % PRIME
-    return h
-
-def update_hash(h, c1, c2):
-    h = (h - ord(c1) * POW_BASE) % PRIME
-    h = (h * BASE + ord(c2)) % PRIME
-    return h
-
-if __name__ == '__main__':
-    pattern, text = read_input()
-    occurrences = get_occurrences(pattern, text)
-    print_occurrences(occurrences)
