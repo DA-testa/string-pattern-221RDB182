@@ -1,48 +1,49 @@
 def read_input():
-    pattern = input().rstrip()
-    text = input().rstrip()
-    return pattern, text
+    try:
+        pattern = input().rstrip()
+        text = input().rstrip()
+        return pattern, text
+    except EOFError:
+        return None
 
-def precompute_hashes(text, p, x):
-    # calculate x^|p|
-    x_pow_p = 1
-    for i in range(p):
-        x_pow_p *= x
+def poly_hash(s, p, x):
+    h = 0
+    for i in range(len(s) - 1, -1, -1):
+        h = (h * x + ord(s[i])) % p
+    return h
 
-    # initialize hashes
-    hashes = [0] * (len(text) - p + 1)
+def precompute_hashes(T, P, p, x):
+    H = [0] * (len(T) - len(P) + 1)
+    S = T[len(T) - len(P):]
+    H[len(T) - len(P)] = poly_hash(S, p, x)
+    y = 1
+    for i in range(len(P)):
+        y = (y * x) % p
+    for i in range(len(T) - len(P) - 1, -1, -1):
+        H[i] = (x * H[i + 1] + ord(T[i]) - y * ord(T[i + len(P)])) % p
+    return H
 
-    # calculate hash for the last substring of text
-    s_last = text[-p:]
-    h_last = 0
-    for i in range(p):
-        h_last += ord(s_last[i]) * x_pow_p**(p-1-i)
-
-    # store hash in the last position of hashes
-    hashes[-1] = h_last
-
-    # calculate hashes for the rest of the substrings
-    for i in range(len(text) - p - 1, -1, -1):
-        hashes[i] = (x * hashes[i+1] + ord(text[i]) - x_pow_p * ord(text[i+p]))
-
-    return hashes
-
-def get_occurrences(pattern, text):
-    p = len(pattern)
+def rabin_karp(pattern, text):
+    p = 10**9 + 7
     x = 263
     result = []
-
-    p_hash = sum([ord(pattern[i]) * x**i for i in range(p)])
-    hashes = precompute_hashes(text, p, x)
-
-    for i, h in enumerate(hashes):
-        if h == p_hash:
-            if text[i:i+p] == pattern:
-                result.append(i)
-
+    p_hash = poly_hash(pattern, p, x)
+    H = precompute_hashes(text, pattern, p, x)
+    for i in range(len(text) - len(pattern) + 1):
+        if p_hash != H[i]:
+            continue
+        if text[i:i + len(pattern)] == pattern:
+            result.append(i)
     return result
 
 if __name__ == '__main__':
-    pattern, text = read_input()
-    occurrences = get_occurrences(pattern, text)
-    print(" ".join(str(i) for i in occurrences))
+    while True:
+        inputs = read_input()
+        if inputs is None:
+            break
+        pattern, text = inputs
+        result = rabin_karp(pattern, text)
+        for pos in result:
+            print(pos, end=' ')
+        print()
+        
