@@ -4,7 +4,7 @@ def read_input():
         text = input().rstrip()
         return pattern, text
     except EOFError:
-        return None
+        return '', ''
 
 def poly_hash(s, p, x):
     h = 0
@@ -38,10 +38,9 @@ def rabin_karp(pattern, text):
 
 if __name__ == '__main__':
     while True:
-        inputs = read_input()
-        if inputs is None:
+        pattern, text = read_input()
+        if pattern == '' and text == '':
             break
-        pattern, text = inputs
         result = rabin_karp(pattern, text)
         for pos in result:
             print(pos, end=' ')
