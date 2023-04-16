@@ -1,10 +1,11 @@
 def read_input():
     try:
+        choice = input()
         pattern = input().rstrip()
         text = input().rstrip()
-        return pattern, text
     except EOFError:
-        return '', ''
+        sys.exit(1)
+    return pattern, text
 
 def poly_hash(s, p, x):
     h = 0
@@ -26,17 +27,19 @@ def precompute_hashes(T, P, p, x):
 def rabin_karp(pattern, text):
     p = 10**9 + 7
     x = 263
+    result = []
     p_hash = poly_hash(pattern, p, x)
     H = precompute_hashes(text, pattern, p, x)
     for i in range(len(text) - len(pattern) + 1):
         if p_hash != H[i]:
             continue
         if text[i:i + len(pattern)] == pattern:
-            print(i, end=' ')
+            result.append(i)
+    return result
 
 if __name__ == '__main__':
     pattern, text = read_input()
-    while pattern and text:
-        rabin_karp(pattern, text)
-        print()
-        pattern, text = read_input()
+    result = rabin_karp(pattern, text)
+    for pos in result:
+        print(pos, end=' ')
+        
