@@ -83,8 +83,9 @@ def get_occurrences(input_vers, pattern, text):
 
 if __name__ == '__main__':
     try:
-        input_vers, pattern, text = read_input()
-        print_occurrences(get_occurrences(input_vers, pattern, text))
+        with open('tests/06') as f:
+            input_vers, pattern, text = f.readlines()
+        print_occurrences(get_occurrences(input_vers.strip(), pattern.strip(), text.strip()))
     except EOFError:
         print("Error: Input was not provided")
     finally:
