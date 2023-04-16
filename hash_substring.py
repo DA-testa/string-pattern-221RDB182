@@ -56,17 +56,19 @@ def get_occurrences():
         n = int(f.readline().strip())
         a = list(map(int, f.readline().split()))
 
-    diffs = [a[i+1]-a[i] for i in range(n-1)]
-
-    if all(diff == diffs[0] for diff in diffs):
-        return [a[0], diffs[0]]
-    else:
-        for i in range(n-2):
-            new_diffs = [a[i+2]-a[i+1] if j == i else a[j+1]-a[j] for j in range(n-2)]
-            if all(diff == new_diffs[0] for diff in new_diffs):
-                return [a[i], a[i+1], new_diffs[0]]
+    # Check all pairs of elements in the input list
+    for i in range(n):
+        for j in range(i + 1, n):
+            diff = a[j] - a[i]
+            # Check if all subsequent elements in the list also have the same difference
+            k = j + 1
+            while k < n and a[k] - a[k-1] == diff:
+                k += 1
+            if k == n:
+                return [a[i], diff]
 
     return None
+
 
 if __name__ == '__main__':
     try:
