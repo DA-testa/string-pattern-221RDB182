@@ -1,3 +1,5 @@
+import sys
+
 def read_input():
     try:
         choice = input()
