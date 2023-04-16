@@ -67,8 +67,8 @@ def get_occurrences(input_vers, pattern, text):
         power = 1
         occurrences = []
         for i in range(pattern_len):
-            pattern_hash = (pattern_hash + ord(pattern[i]) * power) % prime
-            text_hash = (text_hash + ord(text[i]) * power) % prime
+            pattern_hash = (pattern_hash * 10 + ord(pattern[i])) % prime
+            text_hash = (text_hash * 10 + ord(text[i])) % prime
             power = (power * 10) % prime
         for i in range(text_len - pattern_len + 1):
             if pattern_hash == text_hash:
