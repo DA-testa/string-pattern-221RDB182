@@ -51,35 +51,22 @@ def print_occurrences(output):
     print(' '.join(map(str, output)))
 
 
-def get_occurrences(input_vers, pattern, text):
-    if input_vers not in ["I", "F"]:
-        raise ValueError("Invalid input version")
-    if not pattern or not text:
-        return []
-    if input_vers == "I":
-        return rabin_karp(pattern, text)
-    elif input_vers == "F":
-        pattern_len = len(pattern)
-        text_len = len(text)
-        prime = 101  # A prime number used in the Rabin-Karp algorithm
-        pattern_hash = 0
-        text_hash = 0
-        power = 1
-        occurrences = []
-        for i in range(pattern_len):
-            pattern_hash = (pattern_hash + ord(pattern[i]) * power) % prime
-            text_hash = (text_hash + ord(text[i]) * power) % prime
-            power = (power * 10) % prime
-        for i in range(text_len - pattern_len + 1):
-            if pattern_hash == text_hash:
-                if text[i:i+pattern_len] == pattern:
-                    occurrences.append(i)
-            if i < text_len - pattern_len:
-                text_hash = (text_hash - ord(text[i]) * power) % prime
-                text_hash = (text_hash * 10 + ord(text[i+pattern_len])) % prime
-                text_hash = (text_hash + prime) % prime
-        return occurrences
+def get_occurrence():
+    with open('tests/06') as f:
+        n = int(f.readline().strip())
+        a = list(map(int, f.readline().split()))
 
+    diffs = [a[i+1]-a[i] for i in range(n-1)]
+
+    if all(diff == diffs[0] for diff in diffs):
+        return [a[0], diffs[0]]
+    else:
+        for i in range(n-2):
+            new_diffs = [a[i+2]-a[i+1] if j == i else a[j+1]-a[j] for j in range(n-2)]
+            if all(diff == new_diffs[0] for diff in new_diffs):
+                return [a[i], a[i+1], new_diffs[0]]
+
+    return None
 
 if __name__ == '__main__':
     try:
