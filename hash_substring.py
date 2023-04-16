@@ -27,16 +27,9 @@ def get_occurrences(input_vers, pattern, text):
         return rabin_karp(pattern, text)
     else:
         return []
-
-    elif input_vers == "F":
-        n = int(pattern.strip())
-        a = list(map(int, text.strip().split()))
-
-        # Check all pairs of elements in the input list
         for i in range(n):
             for j in range(i + 1, n):
                 diff = a[j] - a[i]
-                # Check if all subsequent elements in the list also have the same difference
                 k = j + 1
                 while k < n and a[k] - a[k-1] == diff:
                     k += 1
