@@ -3,8 +3,12 @@ import sys
 
 def read_input():
     input_vers = input().strip()
-    pattern = input().strip()
-    text = input().strip()
+    try:
+        pattern = input().strip()
+        text = input().strip()
+    except EOFError:
+        pattern = ""
+        text = ""
     return input_vers, pattern, text
 
 
