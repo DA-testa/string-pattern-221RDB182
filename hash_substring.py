@@ -52,27 +52,33 @@ def print_occurrences(output):
 
 
 def get_occurrences(input_vers, pattern, text):
+    if input_vers not in ["I", "F"]:
+        raise ValueError("Invalid input version")
+    if not pattern or not text:
+        return []
     if input_vers == "I":
         return rabin_karp(pattern, text)
     elif input_vers == "F":
-        text_len = len(text)
         pattern_len = len(pattern)
-        occurrences = []
+        text_len = len(text)
+        prime = 101  # A prime number used in the Rabin-Karp algorithm
         pattern_hash = 0
         text_hash = 0
+        power = 1
+        occurrences = []
         for i in range(pattern_len):
-            pattern_hash += ord(pattern[i]) * pow(10, pattern_len - i - 1)
-            text_hash += ord(text[i]) * pow(10, pattern_len - i - 1)
+            pattern_hash = (pattern_hash + ord(pattern[i]) * power) % prime
+            text_hash = (text_hash + ord(text[i]) * power) % prime
+            power = (power * 10) % prime
         for i in range(text_len - pattern_len + 1):
-            if text_hash == pattern_hash:
-                if text[i:i + pattern_len] == pattern:
+            if pattern_hash == text_hash:
+                if text[i:i+pattern_len] == pattern:
                     occurrences.append(i)
             if i < text_len - pattern_len:
-                text_hash = (text_hash - ord(text[i]) * pow(10, pattern_len - 1)) * 10 + ord(text[i + pattern_len])
+                text_hash = (text_hash - ord(text[i]) * power) % prime
+                text_hash = (text_hash * 10 + ord(text[i+pattern_len])) % prime
+                text_hash = (text_hash + prime) % prime
         return occurrences
-    else:
-        print("try again")
-        exit()
 
 
 if __name__ == '__main__':
