@@ -83,12 +83,9 @@ def get_occurrences(input_vers, pattern, text):
 
 if __name__ == '__main__':
     try:
-        with open('tests/06', 'r') as f:
-            input_vers, pattern, text = f.readlines()
-    except FileNotFoundError:
-        print("Error: Input file not found")
-        exit(1)
-    except Exception as e:
-        print(f"Error: {e}")
-        exit(1)
-    print_occurrences(get_occurrences(input_vers.strip(), pattern.strip(), text.strip()))
+        input_vers, pattern, text = read_input()
+        print_occurrences(get_occurrences(input_vers, pattern, text))
+    except EOFError:
+        print("Error: Input was not provided")
+    finally:
+        exit()
