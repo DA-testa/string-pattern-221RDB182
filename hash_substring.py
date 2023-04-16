@@ -59,14 +59,13 @@ def get_occurrences(input_vers, pattern, text):
     if input_vers == "I":
         return rabin_karp(pattern, text)
     elif input_vers == "F":
-        with open('tests/06', 'r') as f:
-            pattern_len = len(pattern)
-            text_len = len(text)
-            prime = 101  # A prime number used in the Rabin-Karp algorithm
-            pattern_hash = 0
-            text_hash = 0
-            power = 1
-            occurrences = []
+        pattern_len = len(pattern)
+        text_len = len(text)
+        prime = 101  # A prime number used in the Rabin-Karp algorithm
+        pattern_hash = 0
+        text_hash = 0
+        power = 1
+        occurrences = []
         for i in range(pattern_len):
             pattern_hash = (pattern_hash + ord(pattern[i]) * power) % prime
             text_hash = (text_hash + ord(text[i]) * power) % prime
@@ -84,10 +83,12 @@ def get_occurrences(input_vers, pattern, text):
 
 if __name__ == '__main__':
     try:
-        input_vers, pattern, text = read_input()
-        print_occurrences(get_occurrences(input_vers, pattern, text))
-    except EOFError:
-        print("Error: Input was not provided")
-    finally:
-        exit()
-   
+        with open('tests/06', 'r') as f:
+            input_vers, pattern, text = f.readlines()
+    except FileNotFoundError:
+        print("Error: Input file not found")
+        exit(1)
+    except Exception as e:
+        print(f"Error: {e}")
+        exit(1)
+    print_occurrences(get_occurrences(input_vers.strip(), pattern.strip(), text.strip()))
