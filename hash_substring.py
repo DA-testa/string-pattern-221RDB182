@@ -37,20 +37,26 @@ def update_hash(h, old_c, new_c, p, x, m):
 
 
 def get_occurrences(pattern, text):
-    PRIME = 10 ** 9 + 7
-    x = 1
-    p_len = len(pattern)
-    t_len = len(text)
-    for i in range(p_len):
-        x = (x * 263) % PRIME
-    p_hash = poly_hash(pattern, PRIME, x)
-    h = precompute_hashes(text, p_len, PRIME, x)
+    P = len(pattern)
+    T = len(text)
+    PRIME = 10**9 + 7
+    BASE = 26
+    
+    p_hash = t_hash = 0
+    for i in range(P):
+        p_hash = (p_hash * BASE + ord(pattern[i]) - ord('a')) % PRIME
+        t_hash = (t_hash * BASE + ord(text[i]) - ord('a')) % PRIME
+    
     occurrences = []
-    for i in range(t_len - p_len + 1):
-        if p_hash != h[i]:
-            continue
-        if text[i:i + p_len] == pattern:
+    if p_hash == t_hash:
+        occurrences.append(0)
+    
+    p_base_power = pow(BASE, P-1, PRIME)
+    for i in range(1, T-P+1):
+        t_hash = ((t_hash - (ord(text[i-1]) - ord('a')) * p_base_power) * BASE + ord(text[i+P-1]) - ord('a')) % PRIME
+        if t_hash == p_hash:
             occurrences.append(i)
+    
     return occurrences
 
 
