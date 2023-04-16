@@ -1,4 +1,5 @@
-# python3
+PRIME = 1000000007
+BASE = 263
 
 def read_input():
     try:
