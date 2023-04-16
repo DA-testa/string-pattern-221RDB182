@@ -1,39 +1,42 @@
+import sys
+
+BASE = 263
 PRIME = 1000000007
-BASE = 31
 
 def read_input():
-    pattern = input().rstrip()
-    text = input().rstrip()
-    return pattern, text
+    return (input().rstrip(), input().rstrip())
 
 def print_occurrences(output):
-    print(" ".join(map(str, output)))
+    print(' '.join(map(str, output)))
 
-def hash(s):
+def hash(text):
     h = 0
-    for c in reversed(s):
+    for c in reversed(text):
         h = (h * BASE + ord(c)) % PRIME
     return h
 
-def update_hash(h, c1, c2, m):
-    if len(c2) > m:
-        raise ValueError("c2 is longer than m")
-    h = (h - ord(c1) * POW_BASE) % PRIME
-    h = (h * BASE + ord(c2)) % PRIME
+def precompute_hashes(text, pattern_len):
+    t = len(text)
+    h = [None] * (t - pattern_len + 1)
+    s = text[t - pattern_len:]
+    h[t - pattern_len] = hash(s)
+    y = 1
+    for i in range(pattern_len):
+        y = (y * BASE) % PRIME
+    for i in range(t - pattern_len - 1, -1, -1):
+        pre_hash = BASE * h[i+1] + ord(text[i]) - y * ord(text[i+pattern_len])
+        h[i] = pre_hash % PRIME
     return h
 
 def get_occurrences(pattern, text):
-    n = len(text)
-    m = len(pattern)
-    pattern_hash = hash(pattern)
-    c2_pow = pow(BASE, m-1, PRIME)
-    window_hash = hash(text[n-m:])
     occurrences = []
-    for i in range(n-m, -1, -1):
-        if window_hash == pattern_hash and text[i:i+m] == pattern:
+    p_hash = hash(pattern)
+    t_len, p_len = len(text), len(pattern)
+    h = precompute_hashes(text, p_len)
+    for i in range(t_len - p_len + 1):
+        if p_hash == h[i] and text[i:i+p_len] == pattern:
             occurrences.append(i)
-        window_hash = update_hash(window_hash, text[i], text[i+m] * c2_pow % PRIME)
-    return reversed(occurrences)
+    return occurrences
 
 if __name__ == '__main__':
     pattern, text = read_input()
