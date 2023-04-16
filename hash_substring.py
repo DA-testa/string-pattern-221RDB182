@@ -1,12 +1,13 @@
-import sys
-
-
 def read_input():
-    return (input().rstrip(), input().rstrip())
+    with open('input.txt', 'r') as f:
+        pattern = f.readline().strip()
+        text = f.readline().strip()
+    return pattern, text
 
 
 def print_occurrences(output):
-    print(' '.join(map(str, output)))
+    with open('output.txt', 'w') as f:
+        f.write(' '.join(map(str, output)))
 
 
 def precompute_hashes(text, p_len, p, x):
@@ -55,7 +56,8 @@ def get_occurrences(pattern, text):
     for i in range(1, T-P+1):
         t_hash = ((t_hash - (ord(text[i-1]) - ord('a')) * p_base_power) * BASE + ord(text[i+P-1]) - ord('a')) % PRIME
         if t_hash == p_hash:
-            occurrences.append(i)
+            if text[i:i+P] == pattern:
+                occurrences.append(i)
     
     return occurrences
 
@@ -64,3 +66,5 @@ if __name__ == '__main__':
     pattern, text = read_input()
     occurrences = get_occurrences(pattern, text)
     print_occurrences(occurrences)
+    
+    
