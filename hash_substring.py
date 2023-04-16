@@ -12,28 +12,39 @@ def print_occurrences(output):
     print(' '.join(map(str, output)))
 
 def get_occurrences(pattern, text):
-    # this function should find the occurances using Rabin Karp alghoritm 
+    # Check if the pattern is longer than the text
     if len(pattern) > len(text):
-    # and return an iterable variable
-    return [0]
+        return []
 
-    prime = 1000000007
-    base = 263
+    # Compute the hash value of the pattern
+    pattern_hash = hash(pattern)
 
-pattern_hash = sum([ord(pattern[i]) * base ** i for i in range(len(pattern))]) % prime
-    text_hash = sum([ord(text[i]) * base ** i for i in range(len(pattern))]) % prime
+    # Initialize the hash value of the current window
+    window_hash = hash(text[:len(pattern)])
 
     # Compare the hash values of the pattern and the windows of the text
     occurrences = []
     for i in range(len(text) - len(pattern) + 1):
-        if pattern_hash == text_hash and pattern == text[i:i+len(pattern)]:
+        if pattern_hash == window_hash and pattern == text[i:i+len(pattern)]:
             occurrences.append(i)
         if i < len(text) - len(pattern):
             # Update the hash value for the next window
-            text_hash = (text_hash - ord(text[i]) * base ** (len(pattern) - 1)) * base + ord(text[i+len(pattern)])
-            text_hash %= prime
+            window_hash = update_hash(window_hash, text[i], text[i+len(pattern)])
 
     return occurrences
+
+def hash(s):
+    # Compute the hash value of the string
+    h = 0
+    for c in s:
+        h = (h * BASE + ord(c)) % PRIME
+    return h
+
+def update_hash(h, c1, c2):
+    # Update the hash value by removing the first character and adding the last character
+    h = (h - ord(c1) * POW_BASE) % PRIME
+    h = (h * BASE + ord(c2)) % PRIME
+    return h
 
 # Read input, find occurrences, and print them
 pattern, text = read_input()
