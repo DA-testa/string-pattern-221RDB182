@@ -59,13 +59,14 @@ def get_occurrences(input_vers, pattern, text):
     if input_vers == "I":
         return rabin_karp(pattern, text)
     elif input_vers == "F":
-        pattern_len = len(pattern)
-        text_len = len(text)
-        prime = 101  # A prime number used in the Rabin-Karp algorithm
-        pattern_hash = 0
-        text_hash = 0
-        power = 1
-        occurrences = []
+        with open('tests/06', 'r') as f:
+            pattern_len = len(pattern)
+            text_len = len(text)
+            prime = 101  # A prime number used in the Rabin-Karp algorithm
+            pattern_hash = 0
+            text_hash = 0
+            power = 1
+            occurrences = []
         for i in range(pattern_len):
             pattern_hash = (pattern_hash + ord(pattern[i]) * power) % prime
             text_hash = (text_hash + ord(text[i]) * power) % prime
