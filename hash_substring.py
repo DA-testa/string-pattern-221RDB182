@@ -1,5 +1,6 @@
 import sys
 
+
 def read_input():
     input_vers = input().strip()
     try:
@@ -10,11 +11,13 @@ def read_input():
         text = ""
     return input_vers, pattern, text
 
+
 def poly_hash(s, p, x):
     h = 0
     for i in range(len(s) - 1, -1, -1):
         h = (h * x + ord(s[i])) % p
     return h
+
 
 def precompute_hashes(T, P, p, x):
     if len(T) == len(P):
@@ -29,6 +32,7 @@ def precompute_hashes(T, P, p, x):
         H[i] = (x * H[i + 1] + ord(T[i]) - y * ord(T[i + len(P)])) % p
     return H
 
+
 def rabin_karp(pattern, text):
     p = 10**9 + 7
     x = 263
@@ -42,8 +46,10 @@ def rabin_karp(pattern, text):
             result.append(i)
     return result
 
+
 def print_occurrences(output):
     print(' '.join(map(str, output)))
+
 
 def get_occurrences(input_vers, pattern, text):
     if input_vers not in ["I", "F"]:
@@ -74,7 +80,9 @@ def get_occurrences(input_vers, pattern, text):
                 text_hash = (text_hash + prime) % prime
         return occurrences
 
+
 if __name__ == '__main__':
     try:
         input_vers, pattern, text = read_input()
         print_occurrences(get_occurrences(input_vers, pattern, text))
+   
