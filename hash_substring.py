@@ -1,37 +1,39 @@
+PRIME = 10**9+7
+BASE = 263
+
 def read_input():
     try:
         pattern = input().rstrip()
         text = input().rstrip()
         return pattern, text
-    except EOFError:
-        print("Error: input format is incorrect")
-        exit()
+    
+    def print_occurrences(output):
+    print(" ".join(map(str, output)))
 
-def print_occurrences(output):
-    print(' '.join(map(str, output)))
+def hash(s):
+    h = 0
+    for c in reversed(s):
+        h = (h * BASE + ord(c)) % PRIME
+    return h
+
+def update_hash(h, old_c, new_c, length):
+    h = (h - ord(old_c) * pow(BASE, length-1, PRIME)) % PRIME
+    h = (h * BASE + ord(new_c)) % PRIME
+    return h
 
 def get_occurrences(pattern, text):
-    # Calculate the hash of the pattern
-    pattern_hash = hash(pattern)
-
-    # Initialize variables
-    window_hash = hash(text[:len(pattern)])
     occurrences = []
+    pattern_hash = hash(pattern)
+    window_hash = hash(text[-len(pattern):])
+    length = len(pattern)
+    if window_hash == pattern_hash and text[-length:] == pattern:
+        occurrences.append(len(text)-length)
 
-    # Calculate POW_BASE
-    POW_BASE = pow(BASE, len(pattern) - 1, PRIME)
+    for i in range(len(text)-length-1, -1, -1):
+        window_hash = update_hash(window_hash, text[i+length], text[i], length)
+        if window_hash == pattern_hash and text[i:i+length] == pattern:
+            occurrences.append(i)
+    return reversed(occurrences)
 
-    # Iterate over the text
-    for i in range(len(text) - len(pattern) + 1):
-        # Check if the hash of the window matches the hash of the pattern
-        if window_hash == pattern_hash:
-            # Check if the characters in the window match the pattern
-            if text[i:i+len(pattern)] == pattern:
-                occurrences.append(i)
-        
-        # Update the hash of the window
-        if i < len(text) - len(pattern):
-            window_hash = update_hash(window_hash, text[i], text[i+len(pattern)], POW_BASE)
-    
-    # Return the occurrences
-    return occurrences
+if __name__ == '__main__':
+    print_occurrences(get_occurrences(*read_input()))
