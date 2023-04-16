@@ -46,4 +46,3 @@ if __name__ == '__main__':
         for pos in result:
             print(pos, end=' ')
         print()
-        
