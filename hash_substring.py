@@ -15,9 +15,11 @@ def hash(s):
         h = (h * BASE + ord(c)) % PRIME
     return h
 
-def update_hash(h, c1, c2_pow):
-    h = (h - ord(c1) * c2_pow) % PRIME
-    h = (h * BASE) % PRIME
+def update_hash(h, c1, c2, m):
+    if len(c2) > m:
+        raise ValueError("c2 is longer than m")
+    h = (h - ord(c1) * POW_BASE) % PRIME
+    h = (h * BASE + ord(c2)) % PRIME
     return h
 
 def get_occurrences(pattern, text):
