@@ -51,7 +51,7 @@ def print_occurrences(output):
     print(' '.join(map(str, output)))
 
 
-def get_occurrence():
+def get_occurrences():
     with open('tests/06') as f:
         n = int(f.readline().strip())
         a = list(map(int, f.readline().split()))
