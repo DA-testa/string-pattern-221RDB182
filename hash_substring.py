@@ -85,4 +85,8 @@ if __name__ == '__main__':
     try:
         input_vers, pattern, text = read_input()
         print_occurrences(get_occurrences(input_vers, pattern, text))
+    except EOFError:
+        print("Error: Input was not provided")
+    finally:
+        exit()
    
