@@ -1,70 +1,44 @@
 def read_input():
-    with open('input.txt', 'r') as f:
-        pattern = f.readline().strip()
-        text = f.readline().strip()
+    # Read two lines: pattern and text
+    print("Enter pattern:")
+    pattern = input().rstrip()
+    print("Enter text:")
+    text = input().rstrip()
     return pattern, text
 
-
 def print_occurrences(output):
-    with open('output.txt', 'w') as f:
-        f.write(' '.join(map(str, output)))
-
-
-def precompute_hashes(text, p_len, p, x):
-    h = [0] * (len(text) - p_len + 1)
-    s = text[len(text) - p_len:]
-    h[-1] = poly_hash(s, p, x)
-    y = 1
-    for i in range(p_len):
-        y = (y * x) % p
-    for i in range(len(text) - p_len - 1, -1, -1):
-        pre_hash = x * h[i+1] + ord(text[i]) - y * ord(text[i+p_len])
-        while pre_hash < 0:
-            pre_hash += p
-        h[i] = pre_hash % p
-    return h
-
-
-def poly_hash(s, p, x):
-    h = 0
-    for i in reversed(s):
-        h = (h * x + ord(i)) % p
-    return h
-
-
-def update_hash(h, old_c, new_c, p, x, m):
-    new_h = ((h - ord(old_c) * m) * x + ord(new_c)) % p
-    return new_h
-
+    # Print the occurrences separated by spaces
+    print(' '.join(map(str, output)))
 
 def get_occurrences(pattern, text):
-    P = len(pattern)
-    T = len(text)
-    PRIME = 10**9 + 7
-    BASE = 26
-    
-    p_hash = t_hash = 0
-    for i in range(P):
-        p_hash = (p_hash * BASE + ord(pattern[i]) - ord('a')) % PRIME
-        t_hash = (t_hash * BASE + ord(text[i]) - ord('a')) % PRIME
-    
+    # Check if the pattern is longer than the text
+    if len(pattern) > len(text):
+        return []
+
+    # Choose a prime number and a base for the hash function
+    prime = 1000000007
+    base = 263
+
+    # Compute the hash of the pattern and the first window of the text
+    pattern_hash = 0
+    text_hash = 0
+    power = 1
+    for i in range(len(pattern)):
+        pattern_hash = (pattern_hash * base + ord(pattern[i])) % prime
+        text_hash = (text_hash * base + ord(text[i])) % prime
+        power = (power * base) % prime
+
+    # Compare the hash values of the pattern and the windows of the text
     occurrences = []
-    if p_hash == t_hash:
-        occurrences.append(0)
-    
-    p_base_power = pow(BASE, P-1, PRIME)
-    for i in range(1, T-P+1):
-        t_hash = ((t_hash - (ord(text[i-1]) - ord('a')) * p_base_power) * BASE + ord(text[i+P-1]) - ord('a')) % PRIME
-        if t_hash == p_hash:
-            if text[i:i+P] == pattern:
-                occurrences.append(i)
-    
+    for i in range(len(text) - len(pattern) + 1):
+        if pattern_hash == text_hash and pattern == text[i:i+len(pattern)]:
+            occurrences.append(i)
+        if i < len(text) - len(pattern):
+            text_hash = (base * (text_hash - ord(text[i]) * power) + ord(text[i+len(pattern)])) % prime
+
     return occurrences
 
-
-if __name__ == '__main__':
-    pattern, text = read_input()
-    occurrences = get_occurrences(pattern, text)
-    print_occurrences(occurrences)
-    
-    
+# Read input, find occurrences, and print them
+pattern, text = read_input()
+occurrences = get_occurrences(pattern, text)
+print_occurrences(occurrences)
