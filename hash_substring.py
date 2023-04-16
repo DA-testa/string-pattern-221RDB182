@@ -1,14 +1,14 @@
 import sys
 
 def read_input():
-    try:
-        choice = input()
-        pattern = input().rstrip()
-        text = input().rstrip()
-    except EOFError:
-        print("Error: End of file reached while reading input.")
-        sys.exit(1)
-    return pattern, text
+    while True:
+        try:
+            choice = input()
+            pattern = input().rstrip()
+            text = input().rstrip()
+            return pattern, text
+        except EOFError:
+            print("Error: End of file reached while reading input. Retrying...")
 
 def poly_hash(s, p, x):
     h = 0
