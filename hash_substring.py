@@ -1,9 +1,12 @@
 def read_input():
-    # Read two lines: pattern and text
+    # Print prompt for the pattern and read from input
     print("Enter pattern:")
     pattern = input().rstrip()
+
+    # Print prompt for the text and read from input
     print("Enter text:")
     text = input().rstrip()
+
     return pattern, text
 
 def print_occurrences(output):
