@@ -2,12 +2,15 @@ import sys
 
 
 def read_input():
-
     input_vers = input().strip()
-    try:
+    if input_vers == "I":
         pattern = input().strip()
         text = input().strip()
-    except EOFError:
+    elif input_vers == "F":
+        with open("tests/06") as f:
+            pattern = f.readline().strip()
+            text = f.readline().strip()
+    else:
         pattern = ""
         text = ""
     return input_vers, pattern, text
@@ -19,17 +22,11 @@ def print_occurrences(output):
 
 def get_occurrences(input_vers, pattern, text):
     if input_vers == "I":
-        p = 10**9 + 7
-        x = 263
-        result = []
-        p_hash = poly_hash(pattern, p, x)
-        H = precompute_hashes(text, pattern, p, x)
-        for i in range(len(text) - len(pattern) + 1):
-            if p_hash != H[i]:
-                continue
-            if text[i:i + len(pattern)] == pattern:
-                result.append(i)
-        return result
+        return rabin_karp(pattern, text)
+    elif input_vers == "F":
+        return rabin_karp(pattern, text)
+    else:
+        return []
 
     elif input_vers == "F":
         n = int(pattern.strip())
@@ -71,10 +68,6 @@ def precompute_hashes(T, P, p, x):
 
 
 if __name__ == '__main__':
-    try:
-        input_vers, pattern, text = read_input()
-        print_occurrences(get_occurrences(input_vers, pattern, text))
-    except EOFError:
-        print("Error: Input was not provided")
-    finally:
-        exit()
+    input_vers, pattern, text = read_input()
+    occurrences = get_occurrences(input_vers, pattern, text)
+    print_occurrences(occurrences)
