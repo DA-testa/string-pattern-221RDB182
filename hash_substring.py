@@ -2,13 +2,10 @@ import sys
 
 
 def read_input():
-    try:
-        choice = input()
-        pattern = input().rstrip()
-        text = input().rstrip()
-    except EOFError:
-        return None
-    return pattern, text
+    version = input().strip()
+    pattern = input().strip()
+    text = input().strip()
+    return version, pattern, text
 
 
 def poly_hash(s, p, x):
