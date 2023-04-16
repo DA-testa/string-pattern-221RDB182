@@ -26,22 +26,17 @@ def precompute_hashes(T, P, p, x):
 def rabin_karp(pattern, text):
     p = 10**9 + 7
     x = 263
-    result = []
     p_hash = poly_hash(pattern, p, x)
     H = precompute_hashes(text, pattern, p, x)
     for i in range(len(text) - len(pattern) + 1):
         if p_hash != H[i]:
             continue
         if text[i:i + len(pattern)] == pattern:
-            result.append(i)
-    return result
+            print(i, end=' ')
 
 if __name__ == '__main__':
-    while True:
-        pattern, text = read_input()
-        if pattern == '' and text == '':
-            break
-        result = rabin_karp(pattern, text)
-        for pos in result:
-            print(pos, end=' ')
+    pattern, text = read_input()
+    while pattern and text:
+        rabin_karp(pattern, text)
         print()
+        pattern, text = read_input()
