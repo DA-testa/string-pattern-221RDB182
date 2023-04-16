@@ -2,10 +2,10 @@ import sys
 
 
 def read_input():
-    version = input().strip()
+    input_vers = input().strip()
     pattern = input().strip()
     text = input().strip()
-    return version, pattern, text
+    return input_vers, pattern, text
 
 
 def poly_hash(s, p, x):
